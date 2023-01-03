@@ -1,0 +1,4 @@
+data/*
+exper/*
+logs/*
+pretrained_models/*
