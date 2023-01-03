@@ -2,3 +2,7 @@ env/
 __pycache__/
 *.egg-info/
 settings.py
+data/*
+exper/*
+logs/*
+pretrained_models/*
