@@ -23,6 +23,7 @@ def train(config, n_iter, output_dir, pretrained_dir=None,
         if pretrained_dir is not None:
             net.load(pretrained_dir)
         try:
+            tf.debugging.set_log_device_placement(True)
             net.train(n_iter, output_dir=output_dir,
                       validation_interval=config.get('validation_interval', 100),
                       save_interval=config.get('save_interval', None),
@@ -103,7 +104,7 @@ def _cli_train(config, output_dir, args):
 def _cli_eval(config, output_dir, args):
     # Load model config from previous experiment
     with open(os.path.join(output_dir, 'config.yml'), 'r') as f:
-        model_config = yaml.load(f)['model']
+        model_config = yaml.safe_load(f)['model']
     model_config.update(config.get('model', {}))
     config['model'] = model_config
 
@@ -150,7 +151,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     with open(args.config, 'r') as f:
-        config = yaml.load(f)
+        config = yaml.safe_load(f)
     output_dir = os.path.join(EXPER_PATH, args.exper_name)
     if not os.path.exists(output_dir):
         os.mkdir(output_dir)

@@ -20,7 +20,7 @@ if __name__ == '__main__':
 
     export_name = args.export_name
     with open(args.config, 'r') as f:
-        config = yaml.load(f)
+        config = yaml.safe_load(f)
     config['model']['data_format'] = 'channels_last'
 
     export_root_dir = Path(EXPER_PATH, 'saved_models')

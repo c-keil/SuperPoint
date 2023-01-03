@@ -24,6 +24,8 @@ class SuperPoint(BaseModel):
             'lambda_loss': 0.0001,
             'nms': 0,
             'top_k': 0,
+            'ir': False,
+            'ir_warp': False,
     }
 
     def _model(self, inputs, mode, **config):
@@ -40,9 +42,17 @@ class SuperPoint(BaseModel):
         results = net(inputs['image'])
 
         if config['training']:
-            warped_results = net(inputs['warped']['image'])
-            results = {**results, 'warped_results': warped_results,
-                       'homography': inputs['warped']['homography']}
+            if config['ir']:
+                illum_results = net(inputs['illum']['image'])
+                if config['ir_warp']:
+                    results = {**results, 'illum_results': illum_results,
+                               'homography': inputs['illum']['homography']}
+                else:
+                    results = {**results, 'illum_results': illum_results}
+            else:
+                warped_results = net(inputs['warped']['image'])
+                results = {**results, 'warped_results': warped_results,
+                           'homography': inputs['warped']['homography']}
 
         # Apply NMS and get the final prediction
         prob = results['prob']
@@ -57,38 +67,77 @@ class SuperPoint(BaseModel):
 
     def _loss(self, outputs, inputs, **config):
         logits = outputs['logits']
-        warped_logits = outputs['warped_results']['logits']
         descriptors = outputs['descriptors_raw']
-        warped_descriptors = outputs['warped_results']['descriptors_raw']
+        if config['ir']:
+            illum_logits = outputs['illum_results']['logits']
+            illum_descriptors = outputs['illum_results']['descriptors_raw']
 
-        # Switch to 'channels last' once and for all
-        if config['data_format'] == 'channels_first':
-            logits = tf.transpose(logits, [0, 2, 3, 1])
-            warped_logits = tf.transpose(warped_logits, [0, 2, 3, 1])
-            descriptors = tf.transpose(descriptors, [0, 2, 3, 1])
-            warped_descriptors = tf.transpose(warped_descriptors, [0, 2, 3, 1])
+            if config['data_format'] == 'channels_first':
+                logits = tf.transpose(logits, [0, 2, 3, 1])
+                illum_logits = tf.transpose(illum_logits, [0, 2, 3, 1])
+                descriptors = tf.transpose(descriptors, [0, 2, 3, 1])
+                illum_descriptors = tf.transpose(illum_descriptors, [0, 2, 3, 1])
 
-        # Compute the loss for the detector head
-        detector_loss = utils.detector_loss(
+            # Compute the loss for the detector head
+            detector_loss = utils.detector_loss(
                 inputs['keypoint_map'], logits,
                 valid_mask=inputs['valid_mask'], **config)
-        warped_detector_loss = utils.detector_loss(
-                inputs['warped']['keypoint_map'], warped_logits,
-                valid_mask=inputs['warped']['valid_mask'], **config)
+            # todo: Maybe do not use detector loss from illumination variance image shadows and other artifacts could
+            #  create new keypoints and make older ones disappear
+            illum_detector_loss = utils.detector_loss(
+                inputs['keypoint_map'], illum_logits,
+                valid_mask=inputs['valid_mask'], **config)
 
-        # Compute the loss for the descriptor head
-        descriptor_loss = utils.descriptor_loss(
-                descriptors, warped_descriptors, outputs['homography'],
-                valid_mask=inputs['warped']['valid_mask'], **config)
+            # Compute the loss for the descriptor head
+            if config['ir_warp']:
+                descriptor_loss = utils.descriptor_loss(
+                    descriptors, illum_descriptors, outputs['homography'],
+                    valid_mask=inputs['illum']['valid_mask'], **config)
+            else:
+                descriptor_loss = utils.ir_descriptor_loss(
+                    descriptors, illum_descriptors,
+                    valid_mask=inputs['valid_mask'], **config)
 
-        tf.summary.scalar('detector_loss1', detector_loss)
-        tf.summary.scalar('detector_loss2', warped_detector_loss)
-        tf.summary.scalar('detector_loss_full', detector_loss + warped_detector_loss)
-        tf.summary.scalar('descriptor_loss', config['lambda_loss'] * descriptor_loss)
+            tf.summary.scalar('detector_loss1', detector_loss)
+            tf.summary.scalar('detector_loss2', illum_detector_loss)
+            tf.summary.scalar('detector_loss_full', detector_loss + illum_detector_loss)
+            tf.summary.scalar('descriptor_loss', config['lambda_loss'] * descriptor_loss)
 
-        loss = (detector_loss + warped_detector_loss
-                + config['lambda_loss'] * descriptor_loss)
-        return loss
+            loss = (detector_loss
+                    + config['lambda_loss'] * descriptor_loss)
+            return loss
+        else:
+            warped_logits = outputs['warped_results']['logits']
+            warped_descriptors = outputs['warped_results']['descriptors_raw']
+
+            # Switch to 'channels last' once and for all
+            if config['data_format'] == 'channels_first':
+                logits = tf.transpose(logits, [0, 2, 3, 1])
+                warped_logits = tf.transpose(warped_logits, [0, 2, 3, 1])
+                descriptors = tf.transpose(descriptors, [0, 2, 3, 1])
+                warped_descriptors = tf.transpose(warped_descriptors, [0, 2, 3, 1])
+
+            # Compute the loss for the detector head
+            detector_loss = utils.detector_loss(
+                    inputs['keypoint_map'], logits,
+                    valid_mask=inputs['valid_mask'], **config)
+            warped_detector_loss = utils.detector_loss(
+                    inputs['warped']['keypoint_map'], warped_logits,
+                    valid_mask=inputs['warped']['valid_mask'], **config)
+
+            # Compute the loss for the descriptor head
+            descriptor_loss = utils.descriptor_loss(
+                    descriptors, warped_descriptors, outputs['homography'],
+                    valid_mask=inputs['warped']['valid_mask'], **config)
+
+            tf.summary.scalar('detector_loss1', detector_loss)
+            tf.summary.scalar('detector_loss2', warped_detector_loss)
+            tf.summary.scalar('detector_loss_full', detector_loss + warped_detector_loss)
+            tf.summary.scalar('descriptor_loss', config['lambda_loss'] * descriptor_loss)
+
+            loss = (detector_loss + warped_detector_loss
+                    + config['lambda_loss'] * descriptor_loss)
+            return loss
 
     def _metrics(self, outputs, inputs, **config):
         pred = inputs['valid_mask'] * outputs['pred']

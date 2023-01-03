@@ -35,6 +35,10 @@ class Coco(BaseDataset):
             'params': {},
             'valid_border_margin': 0,
         },
+        'illum_pair': {
+            'enable': False,
+            'path': "train2014_syn",
+        },
     }
 
     def _init_dataset(self, **config):
@@ -45,6 +49,14 @@ class Coco(BaseDataset):
         names = [p.stem for p in image_paths]
         image_paths = [str(p) for p in image_paths]
         files = {'image_paths': image_paths, 'names': names}
+
+        if config['illum_pair']['enable']:
+            illum_base_path = Path(DATA_PATH, 'COCO/' + config['illum_pair']['path'])
+            illum_image_paths = list(illum_base_path.iterdir())
+
+            illum_names = [p.stem for p in illum_image_paths]
+            illum_image_paths = [str(p) for p in illum_image_paths]
+            files = {**files, 'illum_image_paths': illum_image_paths, 'illum_names': illum_names}
 
         if config['labels']:
             label_paths = []
@@ -68,8 +80,20 @@ class Coco(BaseDataset):
             image = tf.image.decode_png(image, channels=3)
             return tf.cast(image, tf.float32)
 
+        def _read_image_illum(path):
+            image = tf.read_file(path)
+            image = tf.image.decode_png(image, channels=1)
+
+            return tf.cast(image, tf.float32)
+
         def _preprocess(image):
             image = tf.image.rgb_to_grayscale(image)
+            if config['preprocessing']['resize']:
+                image = pipeline.ratio_preserving_resize(image,
+                                                         **config['preprocessing'])
+            return image
+
+        def _preprocess_illum(image):
             if config['preprocessing']['resize']:
                 image = pipeline.ratio_preserving_resize(image,
                                                          **config['preprocessing'])
@@ -85,6 +109,7 @@ class Coco(BaseDataset):
         images = images.map(_preprocess)
         data = tf.data.Dataset.zip({'image': images, 'name': names})
 
+        kp = {}
         # Add keypoints
         if has_keypoints:
             kp = tf.data.Dataset.from_tensor_slices(files['label_paths'])
@@ -103,8 +128,26 @@ class Coco(BaseDataset):
             tf.logging.info('Caching data, fist access will take some time.')
             data = data.cache()
 
+        if config['illum_pair']['enable']:
+            assert has_keypoints
+            illum_names = tf.data.Dataset.from_tensor_slices(files['illum_names'])
+            illum_images = tf.data.Dataset.from_tensor_slices(files['illum_image_paths'])
+            illum_images = illum_images.map(_read_image_illum)
+            illum_images = illum_images.map(_preprocess_illum)
+            illum = tf.data.Dataset.zip({'image': illum_images, 'name': illum_names, 'keypoints': kp})
+            illum = illum.map(pipeline.add_dummy_valid_mask)
+            if config['warped_pair']['enable']:
+                illum = illum.map_parallel(lambda d: pipeline.homographic_augmentation(
+                    d, add_homography=True, **config['warped_pair']))
+                if is_training and config['augmentation']['photometric']['enable']:
+                    illum = illum.map_parallel(lambda d: pipeline.photometric_augmentation(
+                        d, **config['augmentation']['photometric']))
+            illum = illum.map_parallel(pipeline.add_keypoint_map)
+            data = tf.data.Dataset.zip((data, illum))
+            data = data.map(lambda d, i: {**d, 'illum': i})
+
         # Generate the warped pair
-        if config['warped_pair']['enable']:
+        elif config['warped_pair']['enable']:
             assert has_keypoints
             warped = data.map_parallel(lambda d: pipeline.homographic_augmentation(
                 d, add_homography=True, **config['warped_pair']))
@@ -131,7 +174,14 @@ class Coco(BaseDataset):
             data = data.map_parallel(pipeline.add_keypoint_map)
         data = data.map_parallel(
             lambda d: {**d, 'image': tf.to_float(d['image']) / 255.})
-        if config['warped_pair']['enable']:
+
+        if config['illum_pair']['enable']:
+            data = data.map_parallel(
+                lambda d: {
+                    **d, 'illum': {**d['illum'],
+                                    'image': tf.to_float(d['illum']['image']) / 255.}})
+
+        elif config['warped_pair']['enable']:
             data = data.map_parallel(
                 lambda d: {
                     **d, 'warped': {**d['warped'],

@@ -68,6 +68,7 @@ def compute_homography(matched_kp1, matched_kp2):
 
 
 def preprocess_image(img_file, img_size):
+    print(img_file, img_size)
     img = cv2.imread(img_file, cv2.IMREAD_COLOR)
     img = cv2.resize(img, img_size)
     img_orig = img.copy()
@@ -159,6 +160,7 @@ if __name__ == '__main__':
                                            sift_kp2, sift_matches, None,
                                            matchColor=(0, 255, 0),
                                            singlePointColor=(0, 0, 255))
+        print("SIFT feature matches size: ", len(sift_inliers), " SuperPoint matches size: ", len(inliers))
         cv2.imshow("SIFT matches", sift_matched_img)
 
         cv2.waitKey(0)

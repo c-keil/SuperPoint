@@ -22,7 +22,7 @@ if __name__ == '__main__':
     export_name = args.export_name if args.export_name else experiment_name
     batch_size = args.batch_size
     with open(args.config, 'r') as f:
-        config = yaml.load(f)
+        config = yaml.safe_load(f)
     assert 'eval_iter' in config
 
     output_dir = Path(EXPER_PATH, 'outputs/{}/'.format(export_name))
