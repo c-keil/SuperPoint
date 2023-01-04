@@ -1,0 +1,11 @@
+model:
+    name: 'super_point'
+    ir: false
+    batch_size: 1
+    learning_rate: 0.001
+    lambda_d: 250
+    positive_margin: 1
+    negative_margin: 0.2
+    lambda_loss: 0.0001
+    detection_threshold: 0.001
+    nms: 4

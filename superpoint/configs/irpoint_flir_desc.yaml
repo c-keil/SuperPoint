@@ -1,0 +1,14 @@
+data:
+    name: 'flir'
+    cache_in_memory: false
+    validation_size: 100
+    preprocessing:
+        resize: [ 120, 160 ]
+model:
+    name: 'super_point'
+    batch_size: 64
+    learning_rate: 0.001
+    detection_threshold: 0.015  # 0.001
+    nms: 4
+    # top_k: 600
+eval_iter: -1

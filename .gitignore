@@ -6,3 +6,4 @@ data/*
 exper/*
 logs/*
 pretrained_models/*
+data/COCO/train2014/COCO_train2014_000000000009.jpg
