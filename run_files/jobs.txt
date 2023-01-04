@@ -1,0 +1,30 @@
+magic-point_test1 Job ID: 23460746
+magic-point_test1tf1_15 Job ID: 23462685
+BID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+          23472134 reservati magicpoi thamilch PD       0:00      1 (Resources)
+          23472133 reservati magicpoi thamilch PD       0:00      1 (Priority)
+          23472131 reservati magicpoi thamilch PD       0:00      1 (Priority)
+          23472132 reservati magicpoi thamilch  R       2:08      1 d1023
+
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+          23475411       gpu magicpoi thamilch  R       3:32      1 d1020
+          23475423 reservati magicpoi thamilch  R       2:38      1 d1023
+
+
+
+
+1 gpu : 23476219
+2 gpu: 23476220
+3 gpu: 23478364
+4 gpu: 23478428
+
+
+[thamilchelvan.a@login-00 run_files]$ sbatch magicpoint_1gpu.sh 
+Submitted batch job 23478745
+[thamilchelvan.a@login-00 run_files]$ sbatch magicpoint_2gpu.sh 
+Submitted batch job 23478757
+[thamilchelvan.a@login-00 run_files]$ sbatch magicpoint_3gpu.sh 
+Submitted batch job 23478758
+[thamilchelvan.a@login-00 run_files]$ sbatch magicpoint_4gpu.sh 
+Submitted batch job 23478759
+

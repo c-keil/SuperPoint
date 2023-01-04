@@ -1,0 +1,275 @@
+/var/spool/slurm/d/job23574140/slurm_script: line 10: conda: command not found
+[03/07/2022 12:12:38 INFO] Running command TRAIN
+[03/07/2022 12:12:38 WARNING] From experiment.py:58: The name tf.set_random_seed is deprecated. Please use tf.compat.v1.set_random_seed instead.
+
+[03/07/2022 12:12:38 INFO] Number of GPUs detected: 2
+[03/07/2022 12:12:46 WARNING] From /home/thamilchelvan.a/NUFRL/SuperPoint/superpoint/datasets/synthetic_shapes.py:129: The name tf.logging.info is deprecated. Please use tf.compat.v1.logging.info instead.
+
+[03/07/2022 12:12:46 INFO] Extracting archive for primitive draw_lines.
+[03/07/2022 12:12:51 INFO] Extracting archive for primitive draw_polygon.
+[03/07/2022 12:12:56 INFO] Extracting archive for primitive draw_multiple_polygons.
+[03/07/2022 12:13:00 INFO] Extracting archive for primitive draw_ellipses.
+[03/07/2022 12:13:05 INFO] Extracting archive for primitive draw_star.
+[03/07/2022 12:13:09 INFO] Extracting archive for primitive draw_checkerboard.
+[03/07/2022 12:13:14 INFO] Extracting archive for primitive draw_stripes.
+[03/07/2022 12:13:18 INFO] Extracting archive for primitive draw_cube.
+[03/07/2022 12:13:23 INFO] Extracting archive for primitive gaussian_noise.
+[03/07/2022 12:13:29 WARNING] Entity <function SyntheticShapes._get_data.<locals>.<lambda> at 0x2abad5f7d400> could not be transformed and will be executed as-is. Please report this to the AutoGraph team. When filing the bug, set the verbosity to 10 (on Linux, `export AUTOGRAPH_VERBOSITY=10`) and attach the full output. Cause: Failed to parse source code of <function SyntheticShapes._get_data.<locals>.<lambda> at 0x2abad5f7d400>, which Python reported as:
+                    lambda image, points:
+
+If this is a lambda function, the error may be avoided by creating the lambda in a standalone statement.
+[03/07/2022 12:13:29 WARNING] From /home/thamilchelvan.a/NUFRL/SuperPoint/superpoint/datasets/synthetic_shapes.py:167: The name tf.read_file is deprecated. Please use tf.io.read_file instead.
+
+[03/07/2022 12:13:29 WARNING] From /home/thamilchelvan.a/NUFRL/SuperPoint/superpoint/datasets/synthetic_shapes.py:189: py_func (from tensorflow.python.ops.script_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+tf.py_func is deprecated in TF V2. Instead, there are two
+    options available in V2.
+    - tf.py_function takes a python function which manipulates tf eager
+    tensors instead of numpy arrays. It's easy to convert a tf eager tensor to
+    an ndarray (just call tensor.numpy()) but having access to eager tensors
+    means `tf.py_function`s can use accelerators such as GPUs as well as
+    being differentiable using a gradient tape.
+    - tf.numpy_function maintains the semantics of the deprecated tf.py_func
+    (it is not differentiable, and manipulates numpy arrays). It drops the
+    stateful argument making all functions stateful.
+    
+[03/07/2022 12:13:30 INFO] Caching data, fist access will take some time.
+[03/07/2022 12:13:30 WARNING] From /home/thamilchelvan.a/.conda/envs/SuperPoint/lib/python3.6/site-packages/tensorflow_core/python/autograph/converters/directives.py:119: The name tf.random_shuffle is deprecated. Please use tf.random.shuffle instead.
+
+[03/07/2022 12:13:30 WARNING] From /home/thamilchelvan.a/.conda/envs/SuperPoint/lib/python3.6/site-packages/tensorflow_core/python/autograph/converters/directives.py:119: The name tf.random_uniform is deprecated. Please use tf.random.uniform instead.
+
+[03/07/2022 12:13:30 WARNING] From /home/thamilchelvan.a/NUFRL/SuperPoint/superpoint/datasets/utils/photometric_augmentation.py:26: where (from tensorflow.python.ops.array_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use tf.where in 2.0, which has the same broadcast rule as np.where
+[03/07/2022 12:13:30 WARNING] From /home/thamilchelvan.a/.conda/envs/SuperPoint/lib/python3.6/site-packages/tensorflow_core/python/autograph/converters/directives.py:119: The name tf.random_normal is deprecated. Please use tf.random.normal instead.
+
+2022-03-07 12:13:31.716492: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcuda.so.1
+2022-03-07 12:13:32.698048: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1639] Found device 0 with properties: 
+name: Tesla P100-PCIE-12GB major: 6 minor: 0 memoryClockRate(GHz): 1.3285
+pciBusID: 0000:04:00.0
+2022-03-07 12:13:32.699083: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1639] Found device 1 with properties: 
+name: Tesla P100-PCIE-12GB major: 6 minor: 0 memoryClockRate(GHz): 1.3285
+pciBusID: 0000:82:00.0
+2022-03-07 12:13:32.708108: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcudart.so.10.0
+2022-03-07 12:13:32.737165: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcublas.so.10.0
+2022-03-07 12:13:32.782516: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcufft.so.10.0
+2022-03-07 12:13:32.843271: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcurand.so.10.0
+2022-03-07 12:13:32.895240: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcusolver.so.10.0
+2022-03-07 12:13:32.925303: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcusparse.so.10.0
+2022-03-07 12:13:32.995432: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcudnn.so.7
+2022-03-07 12:13:33.000498: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1767] Adding visible gpu devices: 0, 1
+[03/07/2022 12:13:33 WARNING] 
+The TensorFlow contrib module will not be included in TensorFlow 2.0.
+For more information, please see:
+  * https://github.com/tensorflow/community/blob/master/rfcs/20180907-contrib-sunset.md
+  * https://github.com/tensorflow/addons
+  * https://github.com/tensorflow/io (for I/O related ops)
+If you depend on functionality not listed there, please file an issue.
+
+[03/07/2022 12:13:34 WARNING] From /home/thamilchelvan.a/.conda/envs/SuperPoint/lib/python3.6/site-packages/tensorflow_core/python/autograph/converters/directives.py:119: The name tf.truncated_normal is deprecated. Please use tf.random.truncated_normal instead.
+
+[03/07/2022 12:13:34 WARNING] From /home/thamilchelvan.a/.conda/envs/SuperPoint/lib/python3.6/site-packages/tensorflow_core/python/autograph/converters/directives.py:119: The name tf.lin_space is deprecated. Please use tf.linspace instead.
+
+[03/07/2022 12:13:34 WARNING] From /home/thamilchelvan.a/.conda/envs/SuperPoint/lib/python3.6/site-packages/tensorflow_core/python/autograph/converters/directives.py:119: The name tf.matrix_solve_ls is deprecated. Please use tf.linalg.lstsq instead.
+
+[03/07/2022 12:13:35 WARNING] From /home/thamilchelvan.a/NUFRL/SuperPoint/superpoint/models/homographies.py:218: to_float (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use `tf.cast` instead.
+[03/07/2022 12:13:36 WARNING] From /home/thamilchelvan.a/NUFRL/SuperPoint/superpoint/models/homographies.py:277: to_int32 (from tensorflow.python.ops.math_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use `tf.cast` instead.
+[03/07/2022 12:13:36 WARNING] From /home/thamilchelvan.a/.conda/envs/SuperPoint/lib/python3.6/site-packages/tensorflow_core/python/autograph/converters/directives.py:119: The name tf.matrix_inverse is deprecated. Please use tf.linalg.inv instead.
+
+[03/07/2022 12:13:37 WARNING] From /home/thamilchelvan.a/NUFRL/SuperPoint/superpoint/datasets/base_dataset.py:109: DatasetV1.make_one_shot_iterator (from tensorflow.python.data.ops.dataset_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use `for ... in dataset:` to iterate over a dataset. If using `tf.estimator`, return the `Dataset` object directly from your input function. As a last resort, you can use `tf.compat.v1.data.make_one_shot_iterator(dataset)`.
+[03/07/2022 12:13:37 WARNING] Entity <function SyntheticShapes._get_data.<locals>.<lambda> at 0x2abae7a98950> could not be transformed and will be executed as-is. Please report this to the AutoGraph team. When filing the bug, set the verbosity to 10 (on Linux, `export AUTOGRAPH_VERBOSITY=10`) and attach the full output. Cause: Failed to parse source code of <function SyntheticShapes._get_data.<locals>.<lambda> at 0x2abae7a98950>, which Python reported as:
+                    lambda image, points:
+
+If this is a lambda function, the error may be avoided by creating the lambda in a standalone statement.
+[03/07/2022 12:13:37 INFO] Caching data, fist access will take some time.
+[03/07/2022 12:13:37 WARNING] Entity <function SyntheticShapes._get_data.<locals>.<lambda> at 0x2abae7e18510> could not be transformed and will be executed as-is. Please report this to the AutoGraph team. When filing the bug, set the verbosity to 10 (on Linux, `export AUTOGRAPH_VERBOSITY=10`) and attach the full output. Cause: Failed to parse source code of <function SyntheticShapes._get_data.<locals>.<lambda> at 0x2abae7e18510>, which Python reported as:
+                    lambda image, points:
+
+If this is a lambda function, the error may be avoided by creating the lambda in a standalone statement.
+[03/07/2022 12:13:37 INFO] Caching data, fist access will take some time.
+[03/07/2022 12:13:37 WARNING] From /home/thamilchelvan.a/NUFRL/SuperPoint/superpoint/datasets/base_dataset.py:111: The name tf.Session is deprecated. Please use tf.compat.v1.Session instead.
+
+2022-03-07 12:13:37.703487: I tensorflow/core/platform/cpu_feature_guard.cc:142] Your CPU supports instructions that this TensorFlow binary was not compiled to use: AVX2 FMA
+2022-03-07 12:13:37.710436: I tensorflow/core/platform/profile_utils/cpu_utils.cc:94] CPU Frequency: 2400115000 Hz
+2022-03-07 12:13:37.710926: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x82a32e0 initialized for platform Host (this does not guarantee that XLA will be used). Devices:
+2022-03-07 12:13:37.710946: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): Host, Default Version
+2022-03-07 12:13:37.896446: I tensorflow/compiler/xla/service/service.cc:168] XLA service 0x447f050 initialized for platform CUDA (this does not guarantee that XLA will be used). Devices:
+2022-03-07 12:13:37.896502: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (0): Tesla P100-PCIE-12GB, Compute Capability 6.0
+2022-03-07 12:13:37.896517: I tensorflow/compiler/xla/service/service.cc:176]   StreamExecutor device (1): Tesla P100-PCIE-12GB, Compute Capability 6.0
+2022-03-07 12:13:37.898725: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1639] Found device 0 with properties: 
+name: Tesla P100-PCIE-12GB major: 6 minor: 0 memoryClockRate(GHz): 1.3285
+pciBusID: 0000:04:00.0
+2022-03-07 12:13:37.900519: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1639] Found device 1 with properties: 
+name: Tesla P100-PCIE-12GB major: 6 minor: 0 memoryClockRate(GHz): 1.3285
+pciBusID: 0000:82:00.0
+2022-03-07 12:13:37.900591: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcudart.so.10.0
+2022-03-07 12:13:37.900625: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcublas.so.10.0
+2022-03-07 12:13:37.900653: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcufft.so.10.0
+2022-03-07 12:13:37.900680: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcurand.so.10.0
+2022-03-07 12:13:37.900708: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcusolver.so.10.0
+2022-03-07 12:13:37.900735: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcusparse.so.10.0
+2022-03-07 12:13:37.900777: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcudnn.so.7
+2022-03-07 12:13:37.907220: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1767] Adding visible gpu devices: 0, 1
+2022-03-07 12:13:37.907284: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcudart.so.10.0
+2022-03-07 12:13:37.911231: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1180] Device interconnect StreamExecutor with strength 1 edge matrix:
+2022-03-07 12:13:37.911263: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1186]      0 1 
+2022-03-07 12:13:37.911285: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1199] 0:   N N 
+2022-03-07 12:13:37.911299: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1199] 1:   N N 
+2022-03-07 12:13:37.916272: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1325] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 11346 MB memory) -> physical GPU (device: 0, name: Tesla P100-PCIE-12GB, pci bus id: 0000:04:00.0, compute capability: 6.0)
+2022-03-07 12:13:37.918480: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1325] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:1 with 11346 MB memory) -> physical GPU (device: 1, name: Tesla P100-PCIE-12GB, pci bus id: 0000:82:00.0, compute capability: 6.0)
+[03/07/2022 12:13:37 WARNING] From /home/thamilchelvan.a/NUFRL/SuperPoint/superpoint/models/base_model.py:105: The name tf.get_default_graph is deprecated. Please use tf.compat.v1.get_default_graph instead.
+
+[03/07/2022 12:13:37 WARNING] From /home/thamilchelvan.a/NUFRL/SuperPoint/superpoint/models/base_model.py:121: The name tf.variable_scope is deprecated. Please use tf.compat.v1.variable_scope instead.
+
+[03/07/2022 12:13:37 WARNING] From /home/thamilchelvan.a/NUFRL/SuperPoint/superpoint/models/base_model.py:121: The name tf.AUTO_REUSE is deprecated. Please use tf.compat.v1.AUTO_REUSE instead.
+
+[03/07/2022 12:13:37 WARNING] From /home/thamilchelvan.a/NUFRL/SuperPoint/superpoint/models/base_model.py:232: DatasetV1.output_shapes (from tensorflow.python.data.ops.dataset_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use `tf.compat.v1.data.get_output_shapes(dataset)`.
+[03/07/2022 12:13:38 WARNING] From /home/thamilchelvan.a/NUFRL/SuperPoint/superpoint/models/base_model.py:242: DatasetV1.output_types (from tensorflow.python.data.ops.dataset_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use `tf.compat.v1.data.get_output_types(dataset)`.
+[03/07/2022 12:13:38 WARNING] From /home/thamilchelvan.a/NUFRL/SuperPoint/superpoint/models/base_model.py:241: DatasetV1.make_initializable_iterator (from tensorflow.python.data.ops.dataset_ops) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use `for ... in dataset:` to iterate over a dataset. If using `tf.estimator`, return the `Dataset` object directly from your input function. As a last resort, you can use `tf.compat.v1.data.make_initializable_iterator(dataset)`.
+[03/07/2022 12:13:38 WARNING] From /home/thamilchelvan.a/NUFRL/SuperPoint/superpoint/models/base_model.py:257: The name tf.placeholder is deprecated. Please use tf.compat.v1.placeholder instead.
+
+[03/07/2022 12:13:38 WARNING] From /home/thamilchelvan.a/NUFRL/SuperPoint/superpoint/models/base_model.py:258: The name tf.data.Iterator is deprecated. Please use tf.compat.v1.data.Iterator instead.
+
+[03/07/2022 12:13:38 WARNING] From /home/thamilchelvan.a/NUFRL/SuperPoint/superpoint/models/base_model.py:153: The name tf.train.replica_device_setter is deprecated. Please use tf.compat.v1.train.replica_device_setter instead.
+
+[03/07/2022 12:13:38 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:38 WARNING] From /home/thamilchelvan.a/NUFRL/SuperPoint/superpoint/models/backbones/vgg.py:10: conv2d (from tensorflow.python.layers.convolutional) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use `tf.keras.layers.Conv2D` instead.
+[03/07/2022 12:13:38 WARNING] From /home/thamilchelvan.a/.conda/envs/SuperPoint/lib/python3.6/site-packages/tensorflow_core/python/layers/convolutional.py:424: Layer.apply (from tensorflow.python.keras.engine.base_layer) is deprecated and will be removed in a future version.
+Instructions for updating:
+Please use `layer.__call__` method instead.
+[03/07/2022 12:13:38 WARNING] From /home/thamilchelvan.a/NUFRL/SuperPoint/superpoint/models/backbones/vgg.py:14: batch_normalization (from tensorflow.python.layers.normalization) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use keras.layers.BatchNormalization instead.  In particular, `tf.control_dependencies(tf.GraphKeys.UPDATE_OPS)` should not be used (consult the `tf.keras.layers.batch_normalization` documentation).
+[03/07/2022 12:13:38 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:38 WARNING] From /home/thamilchelvan.a/NUFRL/SuperPoint/superpoint/models/backbones/vgg.py:28: max_pooling2d (from tensorflow.python.layers.pooling) is deprecated and will be removed in a future version.
+Instructions for updating:
+Use keras.layers.MaxPooling2D instead.
+[03/07/2022 12:13:38 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:38 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:38 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:38 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:38 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:38 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:38 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:38 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:38 WARNING] From /home/thamilchelvan.a/NUFRL/SuperPoint/superpoint/models/utils.py:24: The name tf.depth_to_space is deprecated. Please use tf.compat.v1.depth_to_space instead.
+
+[03/07/2022 12:13:38 WARNING] From /home/thamilchelvan.a/NUFRL/SuperPoint/superpoint/models/utils.py:57: The name tf.space_to_depth is deprecated. Please use tf.compat.v1.space_to_depth instead.
+
+[03/07/2022 12:13:38 WARNING] From /home/thamilchelvan.a/NUFRL/SuperPoint/superpoint/models/utils.py:70: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+
+[03/07/2022 12:13:39 WARNING] From /home/thamilchelvan.a/NUFRL/SuperPoint/superpoint/models/base_model.py:161: The name tf.get_collection is deprecated. Please use tf.compat.v1.get_collection instead.
+
+[03/07/2022 12:13:39 WARNING] From /home/thamilchelvan.a/NUFRL/SuperPoint/superpoint/models/base_model.py:161: The name tf.GraphKeys is deprecated. Please use tf.compat.v1.GraphKeys instead.
+
+[03/07/2022 12:13:39 WARNING] From /home/thamilchelvan.a/NUFRL/SuperPoint/superpoint/models/base_model.py:163: The name tf.trainable_variables is deprecated. Please use tf.compat.v1.trainable_variables instead.
+
+[03/07/2022 12:13:39 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:39 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:39 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:39 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:39 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:39 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:39 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:39 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:39 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:39 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:39 WARNING] From /home/thamilchelvan.a/NUFRL/SuperPoint/superpoint/models/base_model.py:206: The name tf.summary.scalar is deprecated. Please use tf.compat.v1.summary.scalar instead.
+
+[03/07/2022 12:13:39 WARNING] From /home/thamilchelvan.a/NUFRL/SuperPoint/superpoint/models/base_model.py:210: The name tf.train.AdamOptimizer is deprecated. Please use tf.compat.v1.train.AdamOptimizer instead.
+
+[03/07/2022 12:13:40 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:40 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:40 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:40 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:40 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:40 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:40 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:40 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:40 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:40 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:40 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:40 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:40 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:40 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:40 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:40 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:40 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:40 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:40 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:40 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:40 WARNING] From /home/thamilchelvan.a/NUFRL/SuperPoint/superpoint/models/base_model.py:266: The name tf.summary.merge_all is deprecated. Please use tf.compat.v1.summary.merge_all instead.
+
+[03/07/2022 12:13:40 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:40 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:40 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:40 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:40 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:40 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:40 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:40 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:40 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:40 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:40 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:40 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:40 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:40 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:40 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:40 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:40 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:40 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:40 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:40 INFO] Scale of 0 disables regularizer.
+[03/07/2022 12:13:41 WARNING] From /home/thamilchelvan.a/NUFRL/SuperPoint/superpoint/models/base_model.py:276: The name tf.ConfigProto is deprecated. Please use tf.compat.v1.ConfigProto instead.
+
+2022-03-07 12:13:41.088954: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1639] Found device 0 with properties: 
+name: Tesla P100-PCIE-12GB major: 6 minor: 0 memoryClockRate(GHz): 1.3285
+pciBusID: 0000:04:00.0
+2022-03-07 12:13:41.089791: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1639] Found device 1 with properties: 
+name: Tesla P100-PCIE-12GB major: 6 minor: 0 memoryClockRate(GHz): 1.3285
+pciBusID: 0000:82:00.0
+2022-03-07 12:13:41.089851: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcudart.so.10.0
+2022-03-07 12:13:41.089865: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcublas.so.10.0
+2022-03-07 12:13:41.089886: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcufft.so.10.0
+2022-03-07 12:13:41.089903: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcurand.so.10.0
+2022-03-07 12:13:41.089914: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcusolver.so.10.0
+2022-03-07 12:13:41.089928: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcusparse.so.10.0
+2022-03-07 12:13:41.089942: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcudnn.so.7
+2022-03-07 12:13:41.093043: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1767] Adding visible gpu devices: 0, 1
+2022-03-07 12:13:41.093106: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1180] Device interconnect StreamExecutor with strength 1 edge matrix:
+2022-03-07 12:13:41.093114: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1186]      0 1 
+2022-03-07 12:13:41.093119: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1199] 0:   N N 
+2022-03-07 12:13:41.093124: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1199] 1:   N N 
+2022-03-07 12:13:41.095680: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1325] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 11346 MB memory) -> physical GPU (device: 0, name: Tesla P100-PCIE-12GB, pci bus id: 0000:04:00.0, compute capability: 6.0)
+2022-03-07 12:13:41.096531: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1325] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:1 with 11346 MB memory) -> physical GPU (device: 1, name: Tesla P100-PCIE-12GB, pci bus id: 0000:82:00.0, compute capability: 6.0)
+[03/07/2022 12:13:44 WARNING] From /home/thamilchelvan.a/NUFRL/SuperPoint/superpoint/models/base_model.py:287: The name tf.global_variables_initializer is deprecated. Please use tf.compat.v1.global_variables_initializer instead.
+
+[03/07/2022 12:13:44 WARNING] From /home/thamilchelvan.a/NUFRL/SuperPoint/superpoint/models/base_model.py:288: The name tf.local_variables_initializer is deprecated. Please use tf.compat.v1.local_variables_initializer instead.
+
+[03/07/2022 12:13:45 WARNING] From /home/thamilchelvan.a/NUFRL/SuperPoint/superpoint/models/base_model.py:295: The name tf.summary.FileWriter is deprecated. Please use tf.compat.v1.summary.FileWriter instead.
+
+[03/07/2022 12:13:45 WARNING] From /home/thamilchelvan.a/NUFRL/SuperPoint/superpoint/models/base_model.py:298: The name tf.train.Saver is deprecated. Please use tf.compat.v1.train.Saver instead.
+
+[03/07/2022 12:13:45 INFO] Start training
+2022-03-07 12:13:58.912622: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcudnn.so.7
+2022-03-07 12:13:59.906847: W tensorflow/stream_executor/cuda/redzone_allocator.cc:312] Not found: ./bin/ptxas not found
+Relying on driver to perform ptx compilation. This message will be only logged once.
+2022-03-07 12:14:00.081762: I tensorflow/stream_executor/platform/default/dso_loader.cc:44] Successfully opened dynamic library libcublas.so.10.0
+[03/07/2022 12:14:16 INFO] Iter    0: loss 4.6627, precision 0.0006, recall 0.0588
+[03/07/2022 12:14:16 WARNING] From /home/thamilchelvan.a/NUFRL/SuperPoint/superpoint/models/base_model.py:325: The name tf.Summary is deprecated. Please use tf.compat.v1.Summary instead.
+
+slurmstepd: error: *** JOB 23574140 ON c2186 CANCELLED AT 2022-03-07T12:14:25 ***
