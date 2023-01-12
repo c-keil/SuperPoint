@@ -98,15 +98,15 @@ def extract_ORB_keypoints_and_descriptors(img, n_features=1200):
 
     return kp, desc
 
+def select_k_best(points, k):
+    """ Select the k most probable points (and strip their proba).
+    points has shape (num_points, 3) where the last coordinate is the proba. """
+    sorted_prob = points[points[:, 2].argsort(), :2]
+    start = min(k, points.shape[0])
+    return sorted_prob[-start:, :]
+
 def extract_superpoint_keypoints_and_descriptors(keypoint_map, descriptor_map,
                                                  keep_k_points=1000):
-
-    def select_k_best(points, k):
-        """ Select the k most probable points (and strip their proba).
-        points has shape (num_points, 3) where the last coordinate is the proba. """
-        sorted_prob = points[points[:, 2].argsort(), :2]
-        start = min(k, points.shape[0])
-        return sorted_prob[-start:, :]
 
     # Extract keypoints
     keypoints = np.where(keypoint_map > 0)
@@ -174,17 +174,26 @@ def preprocess_image(img_file, img_size):
     return img_preprocessed, img_orig
 
 
-def log_data(kp, desc, detector, img_num):
-    s1 = "/home/colin/Arvind_discovery/NUFRL/Data/2021-11-08_IR_cart_24hr/experimanet_features/"
+def log_data(kp, desc, detector, image_file_path):
+
+    #get file name
+    image_name = os.path.splitext(os.path.basename(image_file_path))[0]
+    kp_save_path = os.path.dirname(image_file_path) + "/keypoints/"
+    desc_save_path = os.path.dirname(image_file_path) + "/descriptors/"
+    if not os.path.exists(kp_save_path):
+        os.mkdir(kp_save_path)
+    if not os.path.exists(desc_save_path):
+        os.mkdir(desc_save_path)
     # f = open(s1+detector+"_kp_"+str(img_num)+".txt", 'w')
     # g = open(s1 + detector + "_desc_"+str(img_num)+".txt", 'w')
     keypoints = []
     for keypoint in kp:
         keypoints.append([keypoint.pt[0], keypoint.pt[1], keypoint.size, keypoint.angle, keypoint.response, keypoint.octave, keypoint.class_id])
-    print(keypoints)
-    print(detector, img_num, np.shape(keypoints))
-    np.savetxt("test.txt", np.array(keypoints))
-    input("enter to continue?")
+    # print(keypoints)
+    # print(detector, img_num, np.shape(keypoints))
+    np.savetxt(kp_save_path + image_name + "_kp.txt", np.array(keypoints))
+    np.savetxt(desc_save_path + image_name + "_desc.txt", desc)
+    # input("enter to continue?")
     # np.savetxt(s1+detector+"_kp_"+str(img_num)+".txt", np.array(keypoints))
     # if desc is not None:
     #     np.savetxt(s1 + detector + "_desc_"+str(img_num)+".txt", desc)
@@ -213,14 +222,16 @@ if __name__ == '__main__':
 
     images_orig = []
     images = []
+    im_paths = []
 
     for filename in sorted(os.listdir(img_folder), reverse=False):
         im_path = os.path.join(img_folder, filename)
-        print(im_path)
+        # print(im_path)
         if not os.path.isdir(im_path):
             img, img_orig = preprocess_image(im_path, img_size)
             images.append(img)
             images_orig.append(img_orig)
+            im_paths.append(im_path)
 
     no_images = len(images)
 
@@ -263,15 +274,23 @@ if __name__ == '__main__':
         matches_SIFT = []
 
         keypoint_map = []
+        prev_keypoint_map = []
 
         for i in range(no_images):
+            print("processing {} of {}".format(i, no_images))
             out = sess.run([output_prob_nms_tensor, output_desc_tensors],
                             feed_dict={input_img_tensor: np.expand_dims(images[i], 0)})
-            if i==0:
-                keypoint_map = np.squeeze(out[0])
+            # if i==0:
+            keypoint_map = np.squeeze(out[0])
             descriptor_map = np.squeeze(out[1])
+            
+            # print(keypoint_map)
+            # print(prev_keypoint_map == keypoint_map)
+            # print(type(keypoint_map))
+            prev_keypoint_map = keypoint_map
             kp1, desc1 = extract_superpoint_keypoints_and_descriptors(
                     keypoint_map, descriptor_map, keep_k_best)
+            # print("kp1: {}".format(kp1[0].pt))
             kp_SP.append(kp1)
             desc_SP.append(desc1)
             # sift_kp1, sift_desc1 = extract_ORB_keypoints_and_descriptors(images_orig[i])
@@ -296,7 +315,7 @@ if __name__ == '__main__':
             # harris_kp1 = extract_harris_keypoints_and_descriptors(images_orig[i])
             # kp_harris.append(harris_kp1)
 
-            log_data(np.array(kp1), desc1, "SuperPoint", i)
+            log_data(np.array(kp1), desc1, "SuperPoint", im_paths[i])
             # log_data(np.array(sift_kp1), sift_desc1, "SIFT", i)
             # log_data(np.array(sift_mod_kp1), sift_mod_desc1, "SIFT_mod", i)
             # log_data(np.array(harris_kp1), None, "harris", i)
