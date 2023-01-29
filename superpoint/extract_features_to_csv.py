@@ -6,11 +6,13 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from matplotlib.ticker import (AutoMinorLocator, MultipleLocator)
 
-
+import glob
 import cv2
 import numpy as np
 import tensorflow as tf  # noqa: E402
 import datetime
+from copy import deepcopy
+from shutil import copy2
 
 from superpoint.settings import EXPER_PATH  # noqa: E402
 
@@ -163,7 +165,7 @@ def compute_homography(matched_kp1, matched_kp2):
 def preprocess_image(img_file, img_size):
     img = cv2.imread(img_file, cv2.IMREAD_COLOR)
     img = cv2.resize(img, img_size)
-    img = img[128:, :]
+    # img = img[128:, :]
     img_orig = img.copy()
 
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -180,10 +182,13 @@ def log_data(kp, desc, detector, image_file_path):
     image_name = os.path.splitext(os.path.basename(image_file_path))[0]
     kp_save_path = os.path.dirname(image_file_path) + "/keypoints/"
     desc_save_path = os.path.dirname(image_file_path) + "/descriptors/"
+    image_copy_path = os.path.dirname(image_file_path) + "/images/" 
     if not os.path.exists(kp_save_path):
         os.mkdir(kp_save_path)
     if not os.path.exists(desc_save_path):
         os.mkdir(desc_save_path)
+    if not os.path.exists(image_copy_path):
+        os.mkdir(image_copy_path)
     # f = open(s1+detector+"_kp_"+str(img_num)+".txt", 'w')
     # g = open(s1 + detector + "_desc_"+str(img_num)+".txt", 'w')
     keypoints = []
@@ -193,6 +198,8 @@ def log_data(kp, desc, detector, image_file_path):
     # print(detector, img_num, np.shape(keypoints))
     np.savetxt(kp_save_path + image_name + "_kp.txt", np.array(keypoints))
     np.savetxt(desc_save_path + image_name + "_desc.txt", desc)
+    copy2(image_file_path, os.path.join(image_copy_path, image_name + ".png"))
+    
     # input("enter to continue?")
     # np.savetxt(s1+detector+"_kp_"+str(img_num)+".txt", np.array(keypoints))
     # if desc is not None:
@@ -224,7 +231,7 @@ if __name__ == '__main__':
     images = []
     im_paths = []
 
-    for filename in sorted(os.listdir(img_folder), reverse=False):
+    for filename in sorted(glob.glob(os.path.join(img_folder,"*.png")), reverse=False):
         im_path = os.path.join(img_folder, filename)
         # print(im_path)
         if not os.path.isdir(im_path):
@@ -234,6 +241,7 @@ if __name__ == '__main__':
             im_paths.append(im_path)
 
     no_images = len(images)
+    # no_images = 200
 
     weights_root_dir = Path(EXPER_PATH, 'saved_models')
     weights_root_dir.mkdir(parents=True, exist_ok=True)
@@ -276,7 +284,8 @@ if __name__ == '__main__':
         keypoint_map = []
         prev_keypoint_map = []
 
-        for i in range(no_images):
+        for i in range(260,no_images):
+        # for i in range(no_images):
             print("processing {} of {}".format(i, no_images))
             out = sess.run([output_prob_nms_tensor, output_desc_tensors],
                             feed_dict={input_img_tensor: np.expand_dims(images[i], 0)})
@@ -314,9 +323,25 @@ if __name__ == '__main__':
 
             # harris_kp1 = extract_harris_keypoints_and_descriptors(images_orig[i])
             # kp_harris.append(harris_kp1)
+            # view kp
+            # im1 = cv2.imread(im_paths[i])
+            # print(type(images[i]))
+            # print(images[i].ndim)
+            # print(images[i].dtype)
+            # print(images[i].shape)
+            # im2 = deepcopy(im1)
+            # print(type(im2))
+            # print(im1.ndim)
+            # print(im1.dtype)
+            # print(im1.shape)
+            # cv2.drawKeypoints(im1,kp1,im2)
+            # cv2.imshow("kps", im2)
+            # cv2.waitKey()
 
             log_data(np.array(kp1), desc1, "SuperPoint", im_paths[i])
-            # log_data(np.array(sift_kp1), sift_desc1, "SIFT", i)
+            #
+            # 
+            #  log_data(np.array(sift_kp1), sift_desc1, "SIFT", i)
             # log_data(np.array(sift_mod_kp1), sift_mod_desc1, "SIFT_mod", i)
             # log_data(np.array(harris_kp1), None, "harris", i)
 

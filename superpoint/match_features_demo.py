@@ -15,16 +15,15 @@ def extract_SIFT_keypoints_and_descriptors(img):
 
     return kp, desc
 
-
-def extract_superpoint_keypoints_and_descriptors(keypoint_map, descriptor_map,
-                                                 keep_k_points=1000):
-
-    def select_k_best(points, k):
+def select_k_best(points, k):
         """ Select the k most probable points (and strip their proba).
         points has shape (num_points, 3) where the last coordinate is the proba. """
         sorted_prob = points[points[:, 2].argsort(), :2]
         start = min(k, points.shape[0])
         return sorted_prob[-start:, :]
+
+def extract_superpoint_keypoints_and_descriptors(keypoint_map, descriptor_map,
+                                                 keep_k_points=1000):
 
     # Extract keypoints
     keypoints = np.where(keypoint_map > 0)
@@ -134,6 +133,26 @@ if __name__ == '__main__':
         descriptor_map2 = np.squeeze(out2[1])
         kp2, desc2 = extract_superpoint_keypoints_and_descriptors(
                 keypoint_map2, descriptor_map2, keep_k_best)
+        
+        # save_path = "/home/colin/Arvind_discovery/NUFRL/ir-slam-evaluation/image_pair/new_pair"
+        # file_name_1 = img1_file.split('/')[-1]
+        # name_1 = file_name_1[:-4]
+        # keypoints = []
+        # for keypoint in kp1:
+        #     keypoints.append([keypoint.pt[0], keypoint.pt[1], keypoint.size, keypoint.angle, keypoint.response, keypoint.octave, keypoint.class_id])
+        # print(name_1)
+        # np.savetxt(save_path + "/" + name_1 + "_kp.txt" , np.array(keypoints))
+        # np.savetxt(save_path + "/" + name_1 + "_desc.txt", desc1)
+
+        # file_name_2 = img2_file.split('/')[-1]
+        # name_2 = file_name_2[:-4]
+        # keypoints = []
+        # for keypoint in kp2:
+        #     keypoints.append([keypoint.pt[0], keypoint.pt[1], keypoint.size, keypoint.angle, keypoint.response, keypoint.octave, keypoint.class_id])
+        # print(name_2)
+        # np.savetxt(save_path + "/" + name_2 + "_kp.txt" , np.array(keypoints))
+        # np.savetxt(save_path + "/" + name_2 + "_desc.txt", desc2)
+
 
         # Match and get rid of outliers
         m_kp1, m_kp2, matches = match_descriptors(kp1, desc1, kp2, desc2)
