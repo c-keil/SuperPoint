@@ -187,8 +187,8 @@ def log_data(kp, desc, detector, image_file_path):
         os.mkdir(kp_save_path)
     if not os.path.exists(desc_save_path):
         os.mkdir(desc_save_path)
-    if not os.path.exists(image_copy_path):
-        os.mkdir(image_copy_path)
+    # if not os.path.exists(image_copy_path):
+    #     os.mkdir(image_copy_path)
     # f = open(s1+detector+"_kp_"+str(img_num)+".txt", 'w')
     # g = open(s1 + detector + "_desc_"+str(img_num)+".txt", 'w')
     keypoints = []
@@ -198,7 +198,7 @@ def log_data(kp, desc, detector, image_file_path):
     # print(detector, img_num, np.shape(keypoints))
     np.savetxt(kp_save_path + image_name + "_kp.txt", np.array(keypoints))
     np.savetxt(desc_save_path + image_name + "_desc.txt", desc)
-    copy2(image_file_path, os.path.join(image_copy_path, image_name + ".png"))
+    # copy2(image_file_path, os.path.join(image_copy_path, image_name + ".png"))
     
     # input("enter to continue?")
     # np.savetxt(s1+detector+"_kp_"+str(img_num)+".txt", np.array(keypoints))
@@ -284,7 +284,7 @@ if __name__ == '__main__':
         keypoint_map = []
         prev_keypoint_map = []
 
-        for i in range(260,no_images):
+        for i in range(0,no_images):
         # for i in range(no_images):
             print("processing {} of {}".format(i, no_images))
             out = sess.run([output_prob_nms_tensor, output_desc_tensors],
