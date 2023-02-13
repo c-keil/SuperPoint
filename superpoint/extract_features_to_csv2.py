@@ -13,6 +13,7 @@ import tensorflow as tf  # noqa: E402
 import datetime
 from copy import deepcopy
 from shutil import copy2
+import time
 
 from superpoint.settings import EXPER_PATH  # noqa: E402
 
@@ -175,6 +176,19 @@ def preprocess_image(img_file, img_size):
 
     return img_preprocessed, img_orig
 
+def check_already_processed(image_file):
+    kp_save_path = os.path.dirname(image_file) + "/keypoints/"
+    desc_save_path = os.path.dirname(image_file) + "/descriptors/"
+    kp_file = kp_save_path + os.path.basename(image_file)[:-4] + "_kp.txt"
+    desc_file = desc_save_path + os.path.basename(image_file)[:-4] + "_desc.npy"
+    if (not os.path.exists(kp_file)) or (not os.path.exists(desc_file)):
+        # print("Already processed {}".format(image_file))
+        # print(os.path.exists(kp_file))
+        # print(kp_file)
+        # print(os.path.exists(desc_file))
+        # print(desc_file)
+        return False
+    return True
 
 def log_data(kp, desc, detector, image_file_path):
 
@@ -232,10 +246,14 @@ if __name__ == '__main__':
     images = []
     im_paths = []
 
-    for filename in sorted(glob.glob(os.path.join(img_folder,"*.png")), reverse=False):
+    impaths = sorted(glob.glob(os.path.join(img_folder,"*.png")), reverse=False)
+    for filename in impaths:
         im_path = os.path.join(img_folder, filename)
         # print(im_path)
-        if not os.path.isdir(im_path):
+        if not check_already_processed(im_path):
+            # print(im_path)
+            # time.sleep(10)
+        # if not os.path.isdir(im_path):
             img, img_orig = preprocess_image(im_path, img_size)
             images.append(img)
             images_orig.append(img_orig)
@@ -243,6 +261,10 @@ if __name__ == '__main__':
 
     no_images = len(images)
     # no_images = 200
+    print("Processing {}".format(img_folder))
+    print("{} total images".format(len(impaths)))
+    print("Processing {}".format(no_images))
+    time.sleep(10)
 
     weights_root_dir = Path(EXPER_PATH, 'saved_models')
     weights_root_dir.mkdir(parents=True, exist_ok=True)
