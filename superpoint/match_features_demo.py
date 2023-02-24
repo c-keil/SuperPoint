@@ -87,9 +87,9 @@ if __name__ == '__main__':
     parser.add_argument('weights_name', type=str)
     parser.add_argument('img1_path', type=str)
     parser.add_argument('img2_path', type=str)
-    parser.add_argument('--H', type=int, default=480,
+    parser.add_argument('--H', type=int, default=512,
                         help='The height in pixels to resize the images to. \
-                                (default: 480)')
+                                (default: 512)')
     parser.add_argument('--W', type=int, default=640,
                         help='The width in pixels to resize the images to. \
                                 (default: 640)')
@@ -122,6 +122,9 @@ if __name__ == '__main__':
         out1 = sess.run([output_prob_nms_tensor, output_desc_tensors],
                         feed_dict={input_img_tensor: np.expand_dims(img1, 0)})
         keypoint_map1 = np.squeeze(out1[0])
+        # print(keypoint_map1)
+        print(type(keypoint_map1))
+        print(keypoint_map1.shape)
         descriptor_map1 = np.squeeze(out1[1])
         kp1, desc1 = extract_superpoint_keypoints_and_descriptors(
                 keypoint_map1, descriptor_map1, keep_k_best)
@@ -133,6 +136,13 @@ if __name__ == '__main__':
         descriptor_map2 = np.squeeze(out2[1])
         kp2, desc2 = extract_superpoint_keypoints_and_descriptors(
                 keypoint_map2, descriptor_map2, keep_k_best)
+
+        tstamp_1 = (img1_file.split('/')[-1]).split('.')[0]
+        tstamp_2 = (img2_file.split('/')[-1]).split('.')[0]
+        np.save("{}_kp_map".format(tstamp_1), keypoint_map1)
+        np.save("{}_kp_map".format(tstamp_2), keypoint_map2)
+        np.save("{}_desc_map".format(tstamp_1), descriptor_map1)
+        np.save("{}_desc_map".format(tstamp_2), descriptor_map2)
         
         # save_path = "/home/colin/Arvind_discovery/NUFRL/ir-slam-evaluation/image_pair/new_pair"
         # file_name_1 = img1_file.split('/')[-1]

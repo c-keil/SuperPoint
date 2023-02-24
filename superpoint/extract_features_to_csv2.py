@@ -108,11 +108,70 @@ def select_k_best(points, k):
     start = min(k, points.shape[0])
     return sorted_prob[-start:, :]
 
+def extract_descriptors_new(keypoint_map, descriptor_map, keep_k_points = 1200, prob_thresh = 0.1):
+    '''Attempt to balance the descriptor extraction across the image'''
+    
+    rows = 4
+    cols = 4
+
+    height = keypoint_map.shape[0]
+    width = keypoint_map.shape[1]
+    col_size = int(width/rows)
+    row_size = int(height/cols)
+    # print("width = {}, height = {}".format(width, height))
+    # print("row_size = {}, col_size = {}".format(row_size, col_size)) 
+    # Extract keypoints
+    keypoints = np.where(keypoint_map > prob_thresh)
+    prob = keypoint_map[keypoints[0], keypoints[1]]
+    keypoints = np.stack([keypoints[0], keypoints[1], prob], axis=-1)
+
+    kps_list = []
+    max_kp_per = int((keep_k_points/(rows*cols)))
+    # print("kps to keep per {} section".format(max_kp_per))
+    for ix in range(cols):
+        for iy in range(rows):
+            col_start = (ix)*col_size
+            col_end = (ix+1)*col_size
+            row_start = (iy)*row_size
+            row_end = (iy+1)*row_size
+
+            kp_map = keypoint_map[row_start:row_end, col_start:col_end]
+            kps = np.where(kp_map > prob_thresh)
+            prob = kp_map[kps[0], kps[1]]
+            kps = np.stack([kps[0], kps[1], prob], axis = -1)
+            kps = select_k_best(kps, max_kp_per)
+            kps[:,0] += row_start
+            kps[:,1] += col_start
+            kps_list.append(kps)
+            # print(kps)
+
+            # print("kp_map row {} col {}, {} kps".format(iy, ix, len(kps)))
+
+
+    # keypoints = select_k_best(keypoints, keep_k_points)
+    # keypoints = keypoints.astype(int)
+    keypoints = np.concatenate(kps_list).astype(int)
+    # print(keypoints)
+    # test_im = np.zeros((height, width), dtype = np.uint8)
+    # for p in keypoints:
+    #     test_im[p[0], p[1]] = 255
+
+    # cv2.imshow('prob', test_im)
+    # cv2.waitKey()
+    # print(len(keypoints))
+
+    # Get descriptors for keypoints
+    desc = descriptor_map[keypoints[:, 0], keypoints[:, 1]]
+    # Convert from just pts to cv2.KeyPoints
+    keypoints = [cv2.KeyPoint(p[1], p[0], 1) for p in keypoints]
+
+    return keypoints, desc
+
 def extract_superpoint_keypoints_and_descriptors(keypoint_map, descriptor_map,
                                                  keep_k_points=1000):
 
     # Extract keypoints
-    keypoints = np.where(keypoint_map > 0)
+    keypoints = np.where(keypoint_map > 0.1)
     prob = keypoint_map[keypoints[0], keypoints[1]]
     keypoints = np.stack([keypoints[0], keypoints[1], prob], axis=-1)
 
@@ -179,14 +238,10 @@ def preprocess_image(img_file, img_size):
 def check_already_processed(image_file):
     kp_save_path = os.path.dirname(image_file) + "/keypoints/"
     desc_save_path = os.path.dirname(image_file) + "/descriptors/"
-    kp_file = kp_save_path + os.path.basename(image_file)[:-4] + "_kp.txt"
+    kp_file = kp_save_path + os.path.basename(image_file)[:-4] + "_kp.npy"
+    # kp_file = kp_save_path + os.path.basename(image_file)[:-4] + "_kp.txt"
     desc_file = desc_save_path + os.path.basename(image_file)[:-4] + "_desc.npy"
     if (not os.path.exists(kp_file)) or (not os.path.exists(desc_file)):
-        # print("Already processed {}".format(image_file))
-        # print(os.path.exists(kp_file))
-        # print(kp_file)
-        # print(os.path.exists(desc_file))
-        # print(desc_file)
         return False
     return True
 
@@ -196,7 +251,7 @@ def log_data(kp, desc, detector, image_file_path):
     image_name = os.path.splitext(os.path.basename(image_file_path))[0]
     kp_save_path = os.path.dirname(image_file_path) + "/keypoints/"
     desc_save_path = os.path.dirname(image_file_path) + "/descriptors/"
-    image_copy_path = os.path.dirname(image_file_path) + "/images/" 
+    # image_copy_path = os.path.dirname(image_file_path) + "/images/" 
     if not os.path.exists(kp_save_path):
         os.mkdir(kp_save_path)
     if not os.path.exists(desc_save_path):
@@ -207,10 +262,13 @@ def log_data(kp, desc, detector, image_file_path):
     # g = open(s1 + detector + "_desc_"+str(img_num)+".txt", 'w')
     keypoints = []
     for keypoint in kp:
-        keypoints.append([keypoint.pt[0], keypoint.pt[1], keypoint.size, keypoint.angle, keypoint.response, keypoint.octave, keypoint.class_id])
+        keypoints.append([keypoint.pt[0], keypoint.pt[1]])
+        # keypoints.append([keypoint.pt[0], keypoint.pt[1], keypoint.size, keypoint.angle, keypoint.response, keypoint.octave, keypoint.class_id])
+    
     # print(keypoints)
     # print(detector, img_num, np.shape(keypoints))
-    np.savetxt(kp_save_path + image_name + "_kp.txt", np.array(keypoints))
+    # np.savetxt(kp_save_path + image_name + "_kp.txt", np.array(keypoints))
+    np.save(kp_save_path + image_name + "_kp", np.array(keypoints, dtype = np.float32))
     # np.savetxt(desc_save_path + image_name + "_desc.txt", desc)
     np.save(desc_save_path + image_name + "_desc", desc)
     # copy2(image_file_path, os.path.join(image_copy_path, image_name + ".png"))
@@ -241,30 +299,29 @@ if __name__ == '__main__':
     img_folder = args.img_folder_path
     img_size = (args.W, args.H)
     keep_k_best = args.k_best
+    min_points = 500
 
     images_orig = []
     images = []
     im_paths = []
-
+    
+    no_images = 0
     impaths = sorted(glob.glob(os.path.join(img_folder,"*.png")), reverse=False)
     for filename in impaths:
-        im_path = os.path.join(img_folder, filename)
-        # print(im_path)
-        if not check_already_processed(im_path):
-            # print(im_path)
-            # time.sleep(10)
-        # if not os.path.isdir(im_path):
-            img, img_orig = preprocess_image(im_path, img_size)
-            images.append(img)
-            images_orig.append(img_orig)
-            im_paths.append(im_path)
+        # im_path = os.path.join(img_folder, filename)
+        if not check_already_processed(filename):
+            no_images += 1
+            # img, img_orig = preprocess_image(im_path, img_size)
+            # images.append(img)
+            # images_orig.append(img_orig)
+            # im_paths.append(im_path)
 
-    no_images = len(images)
+    # no_images = len(images)
     # no_images = 200
     print("Processing {}".format(img_folder))
     print("{} total images".format(len(impaths)))
     print("Processing {}".format(no_images))
-    time.sleep(10)
+    time.sleep(1)
 
     weights_root_dir = Path(EXPER_PATH, 'saved_models')
     weights_root_dir.mkdir(parents=True, exist_ok=True)
@@ -308,10 +365,13 @@ if __name__ == '__main__':
         prev_keypoint_map = []
 
         # for i in range(260,no_images):
-        for i in range(no_images):
-            print("processing {} of {}".format(i, no_images))
+        # for i in range(no_images):
+        for i, file in enumerate(impaths):
+            print("processing {} of {}".format(i, len(impaths)))
+
+            image, _ = preprocess_image(file, img_size)
             out = sess.run([output_prob_nms_tensor, output_desc_tensors],
-                            feed_dict={input_img_tensor: np.expand_dims(images[i], 0)})
+                            feed_dict={input_img_tensor: np.expand_dims(image, 0)})
             # if i==0:
             keypoint_map = np.squeeze(out[0])
             descriptor_map = np.squeeze(out[1])
@@ -322,9 +382,14 @@ if __name__ == '__main__':
             prev_keypoint_map = keypoint_map
             kp1, desc1 = extract_superpoint_keypoints_and_descriptors(
                     keypoint_map, descriptor_map, keep_k_best)
-            # print("kp1: {}".format(kp1[0].pt))
-            kp_SP.append(kp1)
-            desc_SP.append(desc1)
+            
+            # kp1, desc1 = extract_descriptors_new(keypoint_map, descriptor_map, keep_k_best)
+            # if len(kp1) < min_points:
+            #     kp1, desc1 = extract_descriptors_new(keypoint_map, descriptor_map, keep_k_best, prob_thresh= 0.05)
+            
+            # kp_SP.append(kp1)
+            # desc_SP.append(desc1)
+
             # sift_kp1, sift_desc1 = extract_ORB_keypoints_and_descriptors(images_orig[i])
             # kp_SIFT.append(sift_kp1)
             # desc_SIFT.append(sift_desc1)
@@ -361,7 +426,7 @@ if __name__ == '__main__':
             # cv2.imshow("kps", im2)
             # cv2.waitKey()
 
-            log_data(np.array(kp1), desc1, "SuperPoint", im_paths[i])
+            log_data(np.array(kp1), desc1, "SuperPoint", file)
             #
             # 
             #  log_data(np.array(sift_kp1), sift_desc1, "SIFT", i)
