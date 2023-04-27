@@ -4,5 +4,6 @@ __pycache__/
 settings.py
 data/*
 exper/*
+exp/*
 logs/*
 pretrained_models/*
